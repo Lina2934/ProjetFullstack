@@ -34,7 +34,7 @@ class ParticipationProjetTest {
         String role = "Developer";
         float pourcentage = 0.3f;
 
-         assertThrows(DataIntegrityViolationException.class,
+        assertThrows(DataIntegrityViolationException.class,
                 () -> participationProjet.enregistrerParticipation(personneQuiParticipeDeja, codeProjet, role, pourcentage),
                 "Cette personne participe déjà à ce projet");
 

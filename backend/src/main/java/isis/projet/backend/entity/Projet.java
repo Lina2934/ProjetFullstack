@@ -1,7 +1,7 @@
 package isis.projet.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 public class Projet {
     @Id
-    @Setter(lombok.AccessLevel.NONE) // Ne génère pas de setter pour cet attribut
+    @Setter(lombok.AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
@@ -34,20 +34,8 @@ public class Projet {
 
     private LocalDate fin;
 
+    @JsonIgnore // Empêche la récursion infinie en masquant les participations
     @ToString.Exclude
     @OneToMany(mappedBy = "projet", orphanRemoval = true)
     private List<Participation> contributeurs = new ArrayList<>();
-
-    /**
-     * Termine le projet
-     *  (met la date de fin à la date du jour)
-     */
-    public void terminer() {
-        fin = LocalDate.now();
-    }
-
-    public boolean estTermine() {
-        return fin != null;
-    }
-
 }

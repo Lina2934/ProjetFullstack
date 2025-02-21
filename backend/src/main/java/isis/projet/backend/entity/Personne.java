@@ -1,8 +1,8 @@
 package isis.projet.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
 public class Personne {
 
     @Id
-    @Setter(lombok.AccessLevel.NONE) // Ne génère pas de setter pour cet attribut
+    @Setter(lombok.AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer matricule;
 
@@ -31,26 +31,19 @@ public class Personne {
     @NonNull
     private String poste;
 
+    @JsonIgnore // Évite la récursion infinie
     @ToString.Exclude
     @OneToMany(mappedBy = "personne", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Participation> affectations = new ArrayList<>();
 
+    @JsonIgnore // Évite la récursion infinie
     @ToString.Exclude
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
     private Personne superieur;
 
+    @JsonIgnore // Évite la récursion infinie
     @ToString.Exclude
     @OneToMany(mappedBy = "superieur", orphanRemoval = true)
     private List<Personne> subordonnes = new ArrayList<>();
-
-    /**
-     * Ajoute une participation à un projet pour cette personne
-     * @param affectation Le projet auquel la personne participe
-     * @param role Le rôle de la personne dans le projet
-     * @param pourcentage Le pourcentage de temps que la personne consacre au projet
-     */
-    public void addParticipation(Projet affectation, String role, float pourcentage) {
-        var participation = new Participation(role, pourcentage, affectation, this);
-        affectations.add(participation);
-    }
 }

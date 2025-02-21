@@ -8,6 +8,6 @@ class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// Vérifie simplement que l'application démarre correctement
 	}
-
 }
